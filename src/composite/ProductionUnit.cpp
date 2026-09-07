@@ -8,42 +8,77 @@ ProductionUnit::ProductionUnit(const std::string& name, const std::string& unitT
 
 ProductionUnit::~ProductionUnit() 
 {
-    // TODO: delete every WorkComponent* still in 'children' (this
-    // ProductionUnit owns them - see the header comment and design
-    // doc S4), then clear the vector. Follow the pattern from the
-    // Ch.11 IntermediateNode destructor.
+    // deleting every WorkComponent* still in 'children' 
+    // (this ProductionUnit owns them- see the header comment and design
+    // doc S4), then clear the vector
+
+    for (WorkComponent* child : children) 
+    {
+        delete child;
+    }
+    children.clear();
+
 }
 
 void ProductionUnit::add(WorkComponent* component) 
 {
-    // TODO: push_back onto 'children'
+    children.push_back(component);
 }
 
-void ProductionUnit::remove(WorkComponent* component) {
-    // TODO: find 'component' in 'children' and erase it WITHOUT
-    // deleting it (ownership passes to the caller: see header comment). 
+void ProductionUnit::remove(WorkComponent* component) 
+{
+    // finding the 'component' in 'children' and erase it WITHOUT
+    // deleting it (ownership passes to the caller: see header comment)
     // std::find + vector::erase, or std::remove + erase, both work fine here
+
+    for (auto it = children.begin(); it != children.end(); ++it) 
+    {
+        if (*it == component) 
+        {
+            children.erase(it); // only remove from vector
+            return;
+        }
+    }
 }
 
-WorkIterator* ProductionUnit::createIterator(IteratorType type) {
-    // TODO: return `new FullTraversalIterator(this)` or
-    // `new VFXPendingIterator(this)` depending on 'type'. 
-    // This is the textbook Iterator "factory method" hook 
+//-----------------------------------------Iterator "factory method" hook 
+WorkIterator* ProductionUnit::createIterator(IteratorType type) 
+{
+    // returning `new FullTraversalIterator(this)` or `new VFXPendingIterator(this)` depending on 'type' that the client chose
+    
+    switch (type) 
+    {
+        case IteratorType::FULL_TRAVERSAL:
+            return new FullTraversalIterator(this); //  pick which Concr Iterator to hand back
+
+        case IteratorType::VFX_PENDING:
+            return new VFXPendingIterator(this);
+    }
+
     return nullptr;
 }
 
-void ProductionUnit::execute() {
-    // TODO: do this unit's own work (if any), then call execute() on
-    // every child in 'children'. Looping over your OWN private
-    // container from inside your OWN method is fine: rule 7 is about
-    // CLIENT code reaching in from outside, not this.
+void ProductionUnit::execute() 
+{
+    //  do this unit's own work (if any), then call execute() on every child in 'children'
+
+    std::cout << "[" << unitType << "] " << name << " is coordinating its work..." << std::endl;
+    for (WorkComponent* child : children) 
+    {
+        child->execute();
+    }
+   
 }
 
 void ProductionUnit::print(int indent) const 
 {
-    // TODO: also print name/unitType nicely and recurse into children
-    // with an increased indent so nesting is visible in the output
-    std::cout << std::string(static_cast<size_t>(indent) * 2, ' ') << unitType << ": " << name << std::endl;
+    // also print name/unitType nicely and recurse into children with an increased indent so nesting is visible in the output
+
+    std::cout << std::string(static_cast<size_t>(indent) * 2, ' ')  << unitType << ": " << name << std::endl;
+
+    for (const WorkComponent* child : children) {
+        child->print(indent + 1);
+    }
 }
 
 std::string ProductionUnit::getName() const 
@@ -53,8 +88,15 @@ std::string ProductionUnit::getName() const
 
 double ProductionUnit::computeCost() const 
 {
-    // TODO: sum computeCost() across every child
-    return 0.0;
+    //  Summing computeCost() across every child
+     double total = 0.0;
+
+    for (const WorkComponent* child : children) 
+    {
+        total += child->computeCost();
+    }
+    
+    return total;
 }
 
 const std::string& ProductionUnit::getUnitType() const {

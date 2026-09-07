@@ -13,17 +13,16 @@ class VFXPendingIterator;
 // Composite participant. A ProductionUnit can hold OTHER
 // ProductionUnits and/or Shot leaves, to any depth, this is what
 // gives the hierarchy genuine recursion instead of a fixed number of
-// levels. 'unitType' is just a label (e.g. "Production", "Department",
-// "Scene") so the SAME class can represent every level
+// levels. 'unitType' is just a label (ex: "Production", "Department", Scene") so the 
+// SAME class can represent every level
 class ProductionUnit : public WorkComponent 
 {
     public:
         ProductionUnit(const std::string& name, const std::string& unitType);
 
         // Ownership: deletes every child still attached at destruction
-        // time (see design doc S4). Children removed earlier via remove()
-        // are NOT deleted here, because remove() already handed ownership
-        // to whoever called it.
+        // time. Children removed earlier via remove()
+        // are NOT deleted here, because remove() already handed ownership to whoever called it
         virtual ~ProductionUnit();
 
         // Ownership: this ProductionUnit takes ownership of 'component'.
