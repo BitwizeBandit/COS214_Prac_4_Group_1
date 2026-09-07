@@ -19,8 +19,8 @@ class Shot : public WorkComponent
         virtual ~Shot();
 
         // Lifecycle actions - each delegates to 'state'. Whatever the
-        // current state does with an invalid call (e.g. approve() on a
-        // Storyboarded shot) should be handled sensibly, not crash.
+        // current state does with an invalid call (ex: approve() on a
+        // Storyboarded shot) should be handled sensibly, not crash
         void film();
         void submitForReview();
         void approve();
@@ -29,7 +29,7 @@ class Shot : public WorkComponent
         // Called BY the ShotState classes (not by client code) to move
         // this shot to a new state object. Decide and document: does the
         // old state get deleted here, or does each state manage its own
-        // lifetime? (Simplest: delete the old one here before swapping.)
+        // lifetime? (Simplest: delete the old one here before swapping)
         void setState(ShotState* newState);
 
         void setNeedsVFX(bool waiting);

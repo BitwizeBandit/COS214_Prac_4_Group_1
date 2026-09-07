@@ -8,10 +8,13 @@
 class ProductionUnit;
 class WorkComponent;
 
-// SNAPSHOT traversal (see design doc S4). Visits every WorkComponentcin the tree, depth first, 
-// in the order captured at construction time
-// Structural changes made to the tree AFTER construction will
-// NOT be reflected: that trade off is what makes this one suitable for a stable "full script report"
+// Concrete Iterator
+// SNAPSHOT traversal. Visits every WorkComponent in the tree,
+// depth first, in the order captured at construction time. 
+// Structural changes made to the tree AFTER construction are NOT reflected,
+// that trade off is what makes this one suitable for a stable "full script report". 
+// Note: this class does NOT own anything in 'snapshot',
+//  those are borrowed pointers into the live tree, owned by whichever ProductionUnit they actually belong to
 class FullTraversalIterator : public WorkIterator 
 {
     public:

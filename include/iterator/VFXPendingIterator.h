@@ -9,6 +9,7 @@
 class ProductionUnit;
 class WorkComponent;
 
+// Concrete Iterator
 // LIVE traversal . Unlike FullTraversalIterator, this one does NOT copy anything at construction: 
 // it walks the real tree on demand by reading each ProductionUnit's children fresh, so
 // a shot that starts needing VFX partway through a walk is still
