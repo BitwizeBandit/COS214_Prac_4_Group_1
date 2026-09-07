@@ -118,7 +118,9 @@ static void runDailyMeetingScenario(ProductionUnit* production, Shot* heroJump) 
 
     std::cout << "\n-- Driving 'Hero jumps gap' through its lifecycle --" << std::endl;
     heroJump->film();
+    heroJump->print(0);
     heroJump->submitForReview();
+    heroJump->print(0);
 
     std::cout << "\n-- Attempting an invalid transition (approve() while still Storyboarded) --" << std::endl;
     Shot invalidTest("Rejected test shot");
@@ -177,10 +179,12 @@ static void runReshootCrisisScenario(ProductionUnit* production, ProductionUnit*
     std::cout << "\n-- Structural change: moving 'Debris cleanup shot' to a different scene --" << std::endl;
     explosionScene->remove(debrisShot);
     rooftopScene->add(debrisShot);
+    std::cout << "Moved 'Debris cleanup shot' from Explosion Sequence to Rooftop Chase." << std::endl;
 
     std::cout << "\n-- Structural change: a brand-new shot is added AFTER freshReportIt's snapshot was taken --" << std::endl;
     Shot* pickupShot = new Shot("Pickup insert shot");
     explosionScene->add(pickupShot);
+    std::cout << "Added new shot: Pickup insert shot." << std::endl;
 
     std::cout << "\nfreshReportIt keeps walking its ORIGINAL snapshot - the new shot will NOT appear:" << std::endl;
     for (; !freshReportIt->isDone(); freshReportIt->next()) {
