@@ -1,20 +1,24 @@
-#include "decorator/StuntSafetyDecorator.h"
+#include "decorator/VFXEnhancementDecorator.h"
 #include <iostream>
 
-StuntSafetyDecorator::StuntSafetyDecorator(WorkComponent* component)
+VFXEnhancementDecorator::VFXEnhancementDecorator(WorkComponent* component)
     : Decorator(component) {}
 
-void StuntSafetyDecorator::execute() {
-    // TODO: run/print the safety check, then Decorator::execute().
+void VFXEnhancementDecorator::execute() {
+    
     Decorator::execute();
+    std::cout << "Sending "<< getName() << " to VFX pipeline"<< std::endl;
 }
 
-void StuntSafetyDecorator::print(int indent) const {
-    // TODO: print a "[STUNT SAFETY]" marker before delegating.
+void VFXEnhancementDecorator::print(int indent) const {
+    std::cout << std::string(indent * 2, ' ') << "[VFX]" << std::endl;
     Decorator::print(indent);
 }
 
-double StuntSafetyDecorator::computeCost() const {
-    // TODO: add a safety-check fee on top of Decorator::computeCost().
-    return Decorator::computeCost();
+double VFXEnhancementDecorator::computeCost() const {
+    return Decorator::computeCost() + 3000.0;
+}
+
+bool VFXEnhancementDecorator::isWaitingOnVFX() const {
+    return true;
 }
