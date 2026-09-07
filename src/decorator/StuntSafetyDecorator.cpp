@@ -1,27 +1,22 @@
-#include "decorator/Decorator.h"
+#include "decorator/StuntSafetyDecorator.h"
+#include <iostream>
+#include <string>
 
-Decorator::Decorator(WorkComponent* component) : component(component) {}
+StuntSafetyDecorator::StuntSafetyDecorator(WorkComponent* component)
+    : Decorator(component) {}
 
-Decorator::~Decorator() {
-    delete component;
+void StuntSafetyDecorator::execute() {
+    
+    std::cout << "Running stunt safety check for " << getName() << std::endl;
+    Decorator::execute();
 }
 
-void Decorator::execute() {
-    component->execute();
+void StuntSafetyDecorator::print(int indent) const {
+    std::cout << std::string(indent*2, ' ') << "[STUNT SAFETY]" << std::endl;
+    Decorator::print(indent);
 }
 
-void Decorator::print(int indent) const {
-    component->print(indent);
-}
-
-std::string Decorator::getName() const {
-    return component->getName();
-}
-
-double Decorator::computeCost() const {
-    return component->computeCost();
-}
-
-bool Decorator::isWaitingOnVFX() const {
-    return component->isWaitingOnVFX();
+double StuntSafetyDecorator::computeCost() const {
+    
+    return Decorator::computeCost() + 500.0;
 }

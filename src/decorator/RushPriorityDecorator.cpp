@@ -1,26 +1,23 @@
-#include "decorator/VFXEnhancementDecorator.h"
+#include "decorator/RushPriorityDecorator.h"
 #include <iostream>
+#include <string>
 
-VFXEnhancementDecorator::VFXEnhancementDecorator(WorkComponent* component)
+RushPriorityDecorator::RushPriorityDecorator(WorkComponent* component)
     : Decorator(component) {}
 
-void VFXEnhancementDecorator::execute() {
-    // TODO: run/print the VFX enhancement step, then Decorator::execute().
+void RushPriorityDecorator::execute() {
+
+    std::cout << "Rush crew assigned to " << getName() <<std::endl;
     Decorator::execute();
 }
 
-void VFXEnhancementDecorator::print(int indent) const {
-    // TODO: print a "[VFX]" marker before delegating.
+void RushPriorityDecorator::print(int indent) const {
+
+    std::cout << std::string(indent*2 , ' ') << std::endl;
     Decorator::print(indent);
 }
 
-double VFXEnhancementDecorator::computeCost() const {
-    // TODO: add a VFX fee on top of Decorator::computeCost().
-    return Decorator::computeCost();
-}
-
-bool VFXEnhancementDecorator::isWaitingOnVFX() const {
-    // TODO: decide - always true while this decorator is attached, or
-    // delegate to Decorator::isWaitingOnVFX()? Document your choice.
-    return true;
+double RushPriorityDecorator::computeCost() const {
+    
+    return Decorator::computeCost() + 2000.0;
 }
