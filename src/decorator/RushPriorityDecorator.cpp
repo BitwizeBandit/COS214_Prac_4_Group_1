@@ -6,18 +6,18 @@ RushPriorityDecorator::RushPriorityDecorator(WorkComponent* component)
     : Decorator(component) {}
 
 void RushPriorityDecorator::execute() {
-    // TODO: add rush-specific behaviour (e.g. print a "bumped to the
-    // front of the schedule" message), then call Decorator::execute()
-    // so the chain keeps going.
+
+    std::cout << "Rush crew assigned to " << getName() <<std::endl;
     Decorator::execute();
 }
 
 void RushPriorityDecorator::print(int indent) const {
-    // TODO: print a "[RUSH]" marker before delegating.
+
+    std::cout << std::string(indent*2 , ' ') << std::endl;
     Decorator::print(indent);
 }
 
 double RushPriorityDecorator::computeCost() const {
-    // TODO: add a rush fee on top of Decorator::computeCost().
-    return Decorator::computeCost();
+    
+    return Decorator::computeCost() + 2000.0;
 }

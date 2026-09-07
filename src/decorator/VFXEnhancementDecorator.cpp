@@ -7,11 +7,13 @@ VFXEnhancementDecorator::VFXEnhancementDecorator(WorkComponent* component)
 
 void VFXEnhancementDecorator::execute() {
     
-    Decorator::execute();
     std::cout << "Sending "<< getName() << " to VFX pipeline"<< std::endl;
+    Decorator::execute();
+
 }
 
 void VFXEnhancementDecorator::print(int indent) const {
+    
     std::cout << std::string(indent * 2, ' ') << "[VFX]" << std::endl;
     Decorator::print(indent);
 }
