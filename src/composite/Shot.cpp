@@ -3,47 +3,71 @@
 #include "state/StoryboardedState.h"
 #include <iostream>
 
-Shot::Shot(const std::string& name, bool needsVFX)
-    : name(name), state(new StoryboardedState()), needsVFX(needsVFX) {}
+// a new Shot always starts life as Storyboarded: 
+// this is the one place the initial state is chosen, matching our lifecycle described
+// Storyboarded -> Filming -> In Review -> Approved
+Shot::Shot(const std::string& name, bool needsVFX): name(name), state(new StoryboardedState()), needsVFX(needsVFX) {}
 
-Shot::~Shot() {
-    // TODO: delete 'state' (Shot owns it - see design doc S4).
+Shot::~Shot() {// Ownership: Shot owns whichever ShotState is current at the moment its destroyed 
+
+    delete state;
 }
 
+// Each lifecycle action is a one line delegation to whichever ShotState object is current
 void Shot::film() {
-    // TODO: delegate to state->film(this).
+    
+    state->film(this);
 }
 
-void Shot::submitForReview() {
-    // TODO: delegate to state->submitForReview(this).
+void Shot::submitForReview() 
+{
+    state->submitForReview(this);
 }
 
-void Shot::approve() {
-    // TODO: delegate to state->approve(this).
+void Shot::approve() 
+{
+    state->approve(this);
 }
 
-void Shot::reject() {
-    // TODO: delegate to state->reject(this).
+void Shot::reject() 
+{
+    state->reject(this);
 }
 
-void Shot::setState(ShotState* newState) {
-    // TODO: delete the old 'state' (see the ownership note in the
-    // header), then point 'state' at 'newState'.
+// Called BY a ShotState subclass(State) bcs Shot acts as Context for State pattern
+void Shot::setState(ShotState* newState) 
+{
+    // deleting the old 'state', then point 'state' at 'newState'
+    delete state;
+    state = newState;
+
 }
 
 void Shot::setNeedsVFX(bool waiting) {
     needsVFX = waiting;
 }
 
+// This call itself
+// never changes state; only film(), submitForReview(), approve(), reject() do that, 
+// via whichever concrete ShotState is current
 void Shot::execute() {
-    // TODO: whatever "doing a day's work on this shot" means for your
-    // demo - e.g. print its name and current state description.
+    
+    std::cout << "Working on shot \"" << name << "\" (" << state->describe() << ")";
+    if (needsVFX) {
+        std::cout << " [awaiting VFX]";
+    }
+    std::cout << std::endl;
 }
 
 void Shot::print(int indent) const {
-    // TODO: also print state->describe() and whether needsVFX is set.
-    std::cout << std::string(static_cast<size_t>(indent) * 2, ' ')
-              << "Shot: " << name << std::endl;
+    
+    std::cout << std::string(static_cast<size_t>(indent) * 2, ' ') << "Shot: " << name << " [" << state->describe() << "]";
+
+    if (needsVFX) {
+        std::cout << " (VFX pending)";
+    }
+    std::cout << std::endl;
+    
 }
 
 std::string Shot::getName() const {
@@ -51,8 +75,9 @@ std::string Shot::getName() const {
 }
 
 double Shot::computeCost() const {
-    // TODO: return this shot's own base cost.
-    return 0.0;
+    
+    // is a reasonable starting point that still lets ProductionUnit::computeCost() sum meaningfully up the tree
+    return 500.0;
 }
 
 bool Shot::isWaitingOnVFX() const {

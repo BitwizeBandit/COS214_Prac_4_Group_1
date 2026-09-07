@@ -10,15 +10,14 @@ class ProductionUnit;
 class WorkComponent;
 
 // Concrete Iterator
-// LIVE traversal . Unlike FullTraversalIterator, this one does NOT copy anything at construction: 
-// it walks the real tree on demand by reading each ProductionUnit's children fresh, so
-// a shot that starts needing VFX partway through a walk is still
-// picked up. Only components whose isWaitingOnVFX() is currently true
-// are surfaced via currentItem()
-//
-// Safety rule (see design doc S4): a Shot may be MOVED between units
-// while this iterator is active, but must not be DELETED from the
-// tree while a live iterator could still reference it
+// LIVE traversal. Unlike FullTraversalIterator, this does not copy anything at construction: 
+// each first()/next() call walks the real
+// tree by reading each ProductionUnit's children fresh. 
+// Onlyccomponents whose isWaitingOnVFX() is currently true are surfaced
+
+
+// Safety rule: a Shot may be MOVED between units while this iterator is active, 
+// but must not be DELETED from the tree while a live  iterator could still reference it
 
 class VFXPendingIterator : public WorkIterator 
 {

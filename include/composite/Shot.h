@@ -14,22 +14,17 @@ class Shot : public WorkComponent
     public:
         explicit Shot(const std::string& name, bool needsVFX = false);
 
-        // Ownership: Shot owns its ShotState and deletes it here (see
-        // design doc S4).
+        // Ownership: Shot owns its ShotState and deletes it here 
         virtual ~Shot();
 
-        // Lifecycle actions - each delegates to 'state'. Whatever the
-        // current state does with an invalid call (ex: approve() on a
-        // Storyboarded shot) should be handled sensibly, not crash
+        // Lifecycle actions: each delegates to 'state'. Whatever the current state does 
+        // with an invalid call (ex: approve() on a Storyboarded shot) is handled good, not crash
         void film();
         void submitForReview();
         void approve();
         void reject();
 
-        // Called BY the ShotState classes (not by client code) to move
-        // this shot to a new state object. Decide and document: does the
-        // old state get deleted here, or does each state manage its own
-        // lifetime? (Simplest: delete the old one here before swapping)
+        // Called BY the ShotState classes to move this shot to a new state object
         void setState(ShotState* newState);
 
         void setNeedsVFX(bool waiting);
