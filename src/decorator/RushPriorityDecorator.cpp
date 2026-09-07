@@ -13,8 +13,9 @@ void RushPriorityDecorator::execute() {
 
 void RushPriorityDecorator::print(int indent) const {
 
-    std::cout << "Rush crew assigned to " << getName() <<std::endl;
-    Decorator::execute();
+    std::cout << std::string(static_cast<size_t>(indent) * 2, ' ') << "[RUSH PRIORITY]" << std::endl;
+    Decorator::print(indent);
+
 }
 
 double RushPriorityDecorator::computeCost() const {
