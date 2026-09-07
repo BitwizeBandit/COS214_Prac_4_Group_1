@@ -1,5 +1,6 @@
 #include "decorator/RushPriorityDecorator.h"
 #include <iostream>
+#include <string>
 
 RushPriorityDecorator::RushPriorityDecorator(WorkComponent* component)
     : Decorator(component) {}

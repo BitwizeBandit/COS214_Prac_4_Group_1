@@ -1,5 +1,6 @@
 #include "decorator/StuntSafetyDecorator.h"
 #include <iostream>
+#include <string>
 
 StuntSafetyDecorator::StuntSafetyDecorator(WorkComponent* component)
     : Decorator(component) {}

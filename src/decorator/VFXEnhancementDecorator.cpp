@@ -1,5 +1,6 @@
 #include "decorator/VFXEnhancementDecorator.h"
 #include <iostream>
+#include <string>
 
 VFXEnhancementDecorator::VFXEnhancementDecorator(WorkComponent* component)
     : Decorator(component) {}
