@@ -20,7 +20,7 @@
 //
 // We Set this to 0 before submitting to FitchFork
 // ---------------------------------------------------------------------
-#define DEMO_MODE 0
+#define DEMO_MODE 1
 
 static void banner(const std::string& text) {
 #if DEMO_MODE
@@ -107,6 +107,9 @@ static void runDailyMeetingScenario(ProductionUnit* production, Shot* heroJump) 
     std::cout << "-- Nested tree view (ProductionUnit::print(), called once on the root) --" << std::endl;
     production->print(0);
 
+    std::cout << "\n-- Running execute() across the whole tree --" << std::endl;
+    production->execute();
+
     std::cout << "\n-- Flat full script report (FullTraversalIterator - every node, once each) --" << std::endl;
     WorkIterator* reportIt = production->createIterator(IteratorType::FULL_TRAVERSAL);
     for (reportIt->first(); !reportIt->isDone(); reportIt->next()) {
@@ -120,6 +123,8 @@ static void runDailyMeetingScenario(ProductionUnit* production, Shot* heroJump) 
     heroJump->film();
     heroJump->print(0);
     heroJump->submitForReview();
+    heroJump->print(0);
+    heroJump->approve();
     heroJump->print(0);
 
     std::cout << "\n-- Attempting an invalid transition (approve() while still Storyboarded) --" << std::endl;
@@ -156,6 +161,11 @@ static void runReshootCrisisScenario(ProductionUnit* production, ProductionUnit*
     debrisShot->reject(); // InReview -> Filming: the reshoot loop
     debrisShot->print(0);
 
+    std::cout << "\n-- After the reshoot, resubmitting and getting approved this time --" << std::endl;
+    debrisShot->submitForReview();
+    debrisShot->approve();
+    debrisShot->print(0);
+
     std::cout << "\n-- Two independent iterators over the SAME tree, interleaved --" << std::endl;
     WorkIterator* liveVfxIt = production->createIterator(IteratorType::VFX_PENDING);
     WorkIterator* freshReportIt = production->createIterator(IteratorType::FULL_TRAVERSAL);
@@ -178,8 +188,13 @@ static void runReshootCrisisScenario(ProductionUnit* production, ProductionUnit*
 
     std::cout << "\n-- Structural change: moving 'Debris cleanup shot' to a different scene --" << std::endl;
     explosionScene->remove(debrisShot);
-    rooftopScene->add(debrisShot);
-    std::cout << "Moved 'Debris cleanup shot' from Explosion Sequence to Rooftop Chase." << std::endl;
+    WorkComponent* debrisWithVFX = new VFXEnhancementDecorator(debrisShot);
+    rooftopScene->add(debrisWithVFX);
+    std::cout << "Moved 'Debris cleanup shot' from Explosion Sequence to Rooftop Chase (now with VFX enhancement)." << std::endl;
+
+    std::cout << "\n-- Debris cleanup shot's own updated info (proving the VFX decorator is genuinely active) --" << std::endl;
+    debrisWithVFX->print(0);
+    debrisWithVFX->execute();
 
     std::cout << "\n-- Structural change: a brand-new shot is added AFTER freshReportIt's snapshot was taken --" << std::endl;
     Shot* pickupShot = new Shot("Pickup insert shot");
@@ -198,6 +213,8 @@ static void runReshootCrisisScenario(ProductionUnit* production, ProductionUnit*
         std::cout << "  - " << updatedReportIt->currentItem()->getName() << std::endl;
     }
     delete updatedReportIt;
+
+    std::cout << "\nUpdated total cost after Scenario B's changes: " << production->computeCost() << std::endl;
 
     pauseForDemo();
 }
