@@ -20,7 +20,7 @@
 //
 // We Set this to 0 before submitting to FitchFork
 // ---------------------------------------------------------------------
-#define DEMO_MODE 1
+#define DEMO_MODE 0
 
 static void banner(const std::string& text) {
 #if DEMO_MODE
